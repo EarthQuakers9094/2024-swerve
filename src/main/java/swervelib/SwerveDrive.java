@@ -216,6 +216,19 @@ public class SwerveDrive
     checkIfTunerXCompatible();
   }
 
+  public void checkResetAngles() {
+    double pitch = getPitch().getRadians();
+    double roll = getRoll().getRadians();
+
+    double totaloffset = Math.sqrt(roll * roll + pitch * pitch);
+
+    if (totaloffset > 5.0 * Math.PI/180.0) {
+      for (var module : swerveModules) {
+        module.setAngle(module.getAbsolutePosition());
+      }
+    } 
+  }
+
   /**
    * Check all components to ensure that Tuner X Swerve Generator is recommended instead.
    */

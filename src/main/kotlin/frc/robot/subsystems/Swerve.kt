@@ -150,9 +150,18 @@ class Swerve(
         visionPose = getVisionPose()
     }
 
+    fun checkResetAngles() {
+        swerveDrive.checkResetAngles();
+    }
+
     /** This method will be called once per scheduler run */
     override fun periodic() {
+        // DriverStation.reportError("YOU SUCK!", true)/
         currentUpdate = currentUpdate + 1;
+
+        if (currentUpdate % 10 == 0) {
+            swerveDrive.checkResetAngles()
+        }
 
         // SmartDashboard.putNumber("front left", frontleftCanCoder.getAbsolutePosition().value)
         // SmartDashboard.putNumber("front right", frontrightCanCoder.getAbsolutePosition().value)
