@@ -32,6 +32,7 @@ import frc.robot.commands.GotoPose
 import frc.robot.commands.GotoPoseParAmp
 import frc.robot.commands.SetValue
 import frc.robot.commands.swervedrive.drivebase.TeleopDrive
+
 import frc.robot.subsystems.Elevator
 import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Shooter
@@ -65,9 +66,9 @@ import kotlin.math.sign
 class RobotContainer {
         // The robot's subsystems and commands are defined here...
 
-        private val aprilCamera = PhotonCamera("ATBack")
+        private val aprilCamera = PhotonCamera("ATFront")
         //private val backNoteCamera = PhotonCamera("NTFront")
-        private val backNoteCamera = PhotonCamera("NTBack")
+        //private val backNoteCamera = PhotonCamera("NTBack")
         private val swerveDrive = Swerve(/*aprilCamera*/ )
 
         var elevator: Elevator? = null
@@ -95,6 +96,7 @@ class RobotContainer {
     val operatorExtra = CommandXboxController(Constants.OperatorConstants.kDriverControllerPort)
     val driverLeftStick = Joystick(Constants.OperatorConstants.driverLeftStickPort)
     val driverRightStick = Joystick(Constants.OperatorConstants.driverRightStickPort)
+    val operatorExtraHid = operatorExtra.getHID()
 
         /** The container for the robot. Contains subsystems, OI devices, and commands. */
         init {
@@ -160,18 +162,18 @@ class RobotContainer {
                         }
                 }
            ))
-           NamedCommands.registerCommand(
-                "autoPickup",
-                CollectNote(
-                        PIDConstants(0.045, 0.0, 0.001000),
-                                backNoteCamera,
+        //    NamedCommands.registerCommand(
+        //         "autoPickup",
+        //         CollectNote(
+        //                 PIDConstants(0.045, 0.0, 0.001000),
+        //                         backNoteCamera,
                                                        
-                                swerveDrive,
-                                10,
-                                {->shooter!!.noteIn()},
-                                false, intake!!
-                        ),
-        )
+        //                         swerveDrive,
+        //                         10,
+        //                         {->shooter!!.noteIn()},
+        //                         false, intake!!
+        //                 ),
+        //)
 
            NamedCommands.registerCommand("move forward", InstantCommand(
                 object : Runnable {
@@ -254,8 +256,8 @@ class RobotContainer {
                 }
 
                 val driveMode = { true }
-
-        val faceSpeaker = { false }
+        //val driverLeftTrigger = driverLeftStick. 
+        val faceSpeaker = { driverRightStick.getRawButton(2) }
 
                 val simClosedFieldRel =
                                 TeleopDrive(
@@ -264,6 +266,7 @@ class RobotContainer {
                                                 leftX,
                                                 omega,
                                                 driveMode,
+                                                aprilCamera,
                                                 faceSpeaker
                                 )
 
@@ -317,8 +320,12 @@ class RobotContainer {
                                                 AimShooter(
                                                         
                                                         shooter!!,
+                                                        
                                                         swerveDrive,
-                                                        false
+                                                        
+                                                        false,
+                                                        aprilCamera,
+                                                        {operatorExtraHid.leftTriggerAxis > 0.5}
                                                 )
                                         )
                                         .finallyDo({ _ -> faceSpeaker = false })
@@ -352,6 +359,7 @@ class RobotContainer {
                                 )
                         )
             }
+            operatorExtra.button(7).whileTrue(Shoot(shooter!!, elevator!!, false).build())
 JoystickButton(driverRightStick, 3)
                         .onTrue(
                                 FollowTrajectory(
@@ -364,25 +372,26 @@ JoystickButton(driverRightStick, 3)
 
             operatorExtra.rightTrigger(0.5).whileTrue(SpeakerShoot(elevator!!, shooter!!).build());
 
-            JoystickButton(driverRightStick, 2)
+            JoystickButton(driverRightStick, 2).whileTrue(AimShooter(shooter!!, swerveDrive, false, aprilCamera, {operatorExtraHid.leftTriggerAxis > 0.5}))
+            JoystickButton(driverLeftStick, 2)
                     .whileTrue(ParallelCommandGroup(
                         Pickup(shooter!!, elevator!!, intake!!, false, false).build(),
-                        SequentialCommandGroup(
-                                        WaitUntilCommand { ->
-                                                backNoteCamera.latestResult.hasTargets() ||
-                                                                backNoteCamera.latestResult.hasTargets()
-                                        },
-                                        CollectNote(
-                                                        PIDConstants(0.045, 0.0, 0.001000),
-                                                        backNoteCamera,
+                        // SequentialCommandGroup(
+                        //                 WaitUntilCommand { ->
+                        //                         backNoteCamera.latestResult.hasTargets() ||
+                        //                                         backNoteCamera.latestResult.hasTargets()
+                        //                 },
+                        //                 CollectNote(
+                        //                                 PIDConstants(0.045, 0.0, 0.001000),
+                        //                                 backNoteCamera,
                                                        
-                                                        swerveDrive,
-                                                        10,
-                                            {->shooter!!.noteIn()},
-                                            true, intake!!
-                                        ),
+                        //                                 swerveDrive,
+                        //                                 10,
+                        //                     {->shooter!!.noteIn()},
+                        //                     true, intake!!
+                        //                 ),
 
-                        )
+                        // )
                 ))
                 JoystickButton(driverRightStick, 1)
                     .whileTrue(
@@ -483,7 +492,7 @@ JoystickButton(driverRightStick, 3)
             operatorExtra.povUp().toggleOnTrue(Lob(shooter!!,elevator!!).build())
             operatorExtra.leftBumper().onTrue(Shoot(shooter!!,elevator!!,true).build())
 
-            operatorExtra.leftTrigger(0.5).whileTrue(Shoot(shooter!!,elevator!!,false).build());
+            //operatorExtra.leftTrigger(0.5).whileTrue(Shoot(shooter!!,elevator!!,false).build());
             operatorExtra.x().whileTrue(
                 Commands.startEnd(
                         object : Runnable {
@@ -517,7 +526,9 @@ JoystickButton(driverRightStick, 3)
                                                 
                                                 shooter!!,
                                                 swerveDrive,
-                                                false
+                                                false,
+                                                aprilCamera,
+                                                {false}
                                         )
                                 )
                                 .finallyDo({ _ -> faceSpeaker = false })
@@ -535,7 +546,7 @@ JoystickButton(driverRightStick, 3)
         operatorExtra.hid.setRumble(
                 GenericHID.RumbleType.kBothRumble,
                 (if (shooter?.noteIn() ?: false) {
-                    0.5
+                    0.1
                 } else {
                     0.0
                 })

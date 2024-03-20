@@ -11,6 +11,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.Constants
 import frc.robot.subsystems.Swerve
+import frc.robot.camera.AprilTagPoseEstimator
+import org.photonvision.PhotonCamera
 import java.util.function.BooleanSupplier
 import java.util.function.DoubleSupplier
 import kotlin.math.sqrt
@@ -22,6 +24,7 @@ public class TeleopDrive(
     val vY: DoubleSupplier,
     val omega: DoubleSupplier,
     val driveMode: BooleanSupplier,
+    val camera: PhotonCamera,
     val faceSpeaker: BooleanSupplier
 ) : Command() {
   private val controller = swerve.getSwerveController()
@@ -70,10 +73,12 @@ public class TeleopDrive(
     if (facing) {
       if (!lastFrameFacing) {
         rotationPid =
-            PIDController(rotationPIDvalues.kP, rotationPIDvalues.kI, rotationPIDvalues.kD)
+            PIDController(Constants.Camera.rotationPid.kP, Constants.Camera.rotationPid.kI, Constants.Camera.rotationPid.kD)
       }
+      val targetyaw = -1 * (camera.latestResult.targets.filter { it.fiducialId == 4 }.getOrNull(0)?.yaw ?: 0.0)
+      SmartDashboard.putNumber("The target yaw", targetyaw)
       angVelocity =
-          rotationPid.calculate(swerve.getPos().rotation.radians, swerve.speakerAngle().radians)
+          rotationPid.calculate(targetyaw)
     } else {
       angVelocity = Math.pow(omega.getAsDouble(), 3.0)
     }

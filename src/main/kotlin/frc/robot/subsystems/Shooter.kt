@@ -170,6 +170,7 @@ class Shooter(
             speed = shooterSparkMax.encoder.velocity
         }
 
+        desiredAngle = SmartDashboard.getNumber("shooter desired angle",desiredAngle)
 
         val nextPosition =
                 profile.calculate(0.02,

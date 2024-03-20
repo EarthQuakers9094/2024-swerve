@@ -67,6 +67,7 @@ object Constants {
             mat.set(2, 0, 1.0)
             mat
         }
+        val rotationPid = PIDConstants(0.01, 0.0, 0.0)
         val cameraTransform = Transform3d(Translation3d(0.0, 0.0, 0.0), Rotation3d(0.0, 0.0, 0.0))
         // val aprilTagFieldLayout =
         // AprilTagFieldLayout(AprilTagFields.k2024Crescendo.m_resourceFile)
