@@ -34,7 +34,7 @@ class ShootTime(
                             intake
                     ),
                    // FaceDirection(swerveDrive, { swerveDrive.speakerAngle() }, false)
-                        /*.alongWith( */AimShooter(shooter, swerveDrive, true, camera)/*)*/,
+                        /*.alongWith( */AimShooter(shooter, swerveDrive, true, camera, {false})/*)*/,
                     Shoot(shooter,elevator,false).build()
             )
 
