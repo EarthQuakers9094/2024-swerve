@@ -246,7 +246,7 @@ class Shooter(
     // }
 
     fun absoluteAngle():Double {
-        return -(jointAbsoluteEncoder.get() * Math.PI * 2) + 5.194946
+        return -(jointAbsoluteEncoder.get() * Math.PI * 2) + 0.129486 + 5.169754
     }
 
     fun setSpeed(speed: Double) {

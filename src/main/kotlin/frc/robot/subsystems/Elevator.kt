@@ -58,7 +58,7 @@ class Elevator(private val liftMotorId: Int, private val followMotorID: Int) : S
 
     private var pidMode = true
 
-    private var profile = TrapezoidProfile(TrapezoidProfile.Constraints(960.0,960.0));
+    private var profile = TrapezoidProfile(TrapezoidProfile.Constraints(3.0*(60/25)*960.0,3.0*(60/25)*960.0));
 
     private var currentState = TrapezoidProfile.State(0.0,0.0);
 
@@ -73,8 +73,9 @@ class Elevator(private val liftMotorId: Int, private val followMotorID: Int) : S
 
         configureSparkMax {followMotor.follow(liftSparkMax,true)};
 
-
-        configureSparkMax {liftSparkMax.encoder.setPositionConversionFactor(1.0)};
+        //old: 25 new:60
+        //TODO: try flipping this around i dont really want to try and figure it out
+        configureSparkMax {liftSparkMax.encoder.setPositionConversionFactor(25.0 / 60.0)};
         configureSparkMax {liftSparkMax.encoder.setPosition(0.0)};
         configureSparkMax {liftSparkMax.setSmartCurrentLimit(60, 60)};
         configureSparkMax {followMotor.setSmartCurrentLimit(60, 60)};
@@ -118,6 +119,7 @@ class Elevator(private val liftMotorId: Int, private val followMotorID: Int) : S
         SmartDashboard.putNumber("elevator position", liftSparkMax.encoder.position)
         averagePostion.addValue(liftSparkMax.encoder.position)
         SmartDashboard.putNumber("desired elevator position", desiredPosition)
+        SmartDashboard.putNumber("lift spark max output current", liftSparkMax.outputCurrent)
 
         if (pidMode) {
 
