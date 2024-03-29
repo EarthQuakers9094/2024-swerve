@@ -367,12 +367,12 @@ JoystickButton(driverRightStick, 3)
                                         PathPlannerPath.fromPathFile("to amp"),
                                         true
                                 ))
-            operatorExtra.rightBumper().toggleOnTrue(Pickup(shooter!!, elevator!!, intake!!, true, false).build());
+            //operatorExtra.rightBumper().toggleOnTrue()//Pickup(shooter!!, elevator!!, intake!!, true, false).build());
             operatorExtra.leftBumper().whileTrue(Shoot(shooter!!,elevator!!,false).build());
 
             operatorExtra.rightTrigger(0.5).whileTrue(SpeakerShoot(elevator!!, shooter!!).build());
 
-            JoystickButton(driverRightStick, 2).whileTrue(AimShooter(shooter!!, swerveDrive, false, aprilCamera, {operatorExtraHid.leftTriggerAxis > 0.5}))
+            JoystickButton(driverRightStick, 2).whileTrue(AimShooter(shooter!!, swerveDrive, false, aprilCamera, {operatorExtraHid.getRawButton(6)}))
             JoystickButton(driverLeftStick, 2)
                     .whileTrue(ParallelCommandGroup(
                         Pickup(shooter!!, elevator!!, intake!!, false, false).build(),

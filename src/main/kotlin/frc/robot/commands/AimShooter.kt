@@ -71,7 +71,7 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
             // both are in radians? https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.math/atan2.html#:~:text=Returns%20the%20angle%20theta%20of,from%20%2DPI%20to%20PI%20radians.
             shooter.setAngle(angle.coerceIn(0.0, 0.887))
         }
-        if(shoot() && shooter.noteIn()) {
+        if(shooter.noteIn()) {
             when (shootingState) {
                 ShootingState.Idle -> {
                     shootingState = ShootingState.Revving
@@ -80,7 +80,7 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
                     shooter.coastMode()
                 }
                 ShootingState.Revving -> {
-                    if (shooter.atSpeed(false)) {
+                    if (shooter.atSpeed(false) && shoot()) {
                         shootingState = ShootingState.Shooting
                         shooter.intake()
                     }
