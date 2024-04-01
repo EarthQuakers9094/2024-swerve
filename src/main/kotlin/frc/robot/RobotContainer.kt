@@ -402,7 +402,7 @@ JoystickButton(driverRightStick, 3)
             // orExtra.leftTrigger().whileTrue(Pickup(shooter!!, elevator!!, intake!!,
             // false).build())
 
-            operatorExtra.leftStick().whileTrue(shooter!!.backButton().alongWith(intake!!.backButton()));
+            operatorExtra.povDown().whileTrue(shooter!!.backButton().alongWith(intake!!.backButton()));
 
             operatorExtra.y().onTrue(
                 InstantCommand(
@@ -453,7 +453,7 @@ JoystickButton(driverRightStick, 3)
                 )
             ))
 
-            operatorExtra.rightStick().whileTrue(
+            operatorExtra.povUp().whileTrue(
                 shooter!!.forwardButton()
             )
 
@@ -489,7 +489,7 @@ JoystickButton(driverRightStick, 3)
                         ShootTime(shooter!!, intake!!, elevator!!, swerveDrive, aprilCamera).build()
                 )
 
-            operatorExtra.povUp().toggleOnTrue(Lob(shooter!!,elevator!!).build())
+            operatorExtra.rightStick().toggleOnTrue(Lob(shooter!!,elevator!!).build())
             operatorExtra.leftBumper().onTrue(Shoot(shooter!!,elevator!!,true).build())
 
             //operatorExtra.leftTrigger(0.5).whileTrue(Shoot(shooter!!,elevator!!,false).build());
