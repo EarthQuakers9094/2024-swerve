@@ -37,6 +37,8 @@ public class TeleopDrive(
 
   var rotationPid = PIDController(rotationPIDvalues.kP, rotationPIDvalues.kI, rotationPIDvalues.kD)
   var lastFrameFacing = false
+  
+  public var facingSpeaker = false
 
   /**
    * Creates a new ExampleCommand.
@@ -69,13 +71,15 @@ public class TeleopDrive(
     val angVelocity: Double
 
     val facing = faceSpeaker.getAsBoolean()
+    facingSpeaker = false
 
     if (facing) {
       if (!lastFrameFacing) {
         rotationPid =
             PIDController(Constants.Camera.rotationPid.kP, Constants.Camera.rotationPid.kI, Constants.Camera.rotationPid.kD)
       }
-      val targetyaw = -1 * (camera.latestResult.targets.filter { it.fiducialId == 4 }.getOrNull(0)?.yaw ?: 0.0)
+      val targetyaw = -1 * (camera.latestResult.targets.filter { it.fiducialId == 4 || it.fiducialId == 7 }.getOrNull(0)?.yaw ?: 0.0)
+      facingSpeaker = Math.abs(targetyaw) < 3.0
       SmartDashboard.putNumber("The target yaw", targetyaw)
       angVelocity =
           rotationPid.calculate(targetyaw)

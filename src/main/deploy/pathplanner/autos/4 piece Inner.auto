@@ -49,12 +49,6 @@
           }
         },
         {
-          "type": "named",
-          "data": {
-            "name": "facedown"
-          }
-        },
-        {
           "type": "parallel",
           "data": {
             "commands": [

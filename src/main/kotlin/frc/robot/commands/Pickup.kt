@@ -61,7 +61,7 @@ class Pickup(
                         if (high) {
                             0.0
                         } else {
-                            0.0
+                            0.01
                         }
                     ),
                     InstantCommand(

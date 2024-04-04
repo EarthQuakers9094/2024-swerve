@@ -13,6 +13,7 @@ class LocationShoot(
         private val shooter: Shooter,
         private val pose:Pose,
         private val elevatorFirst: Boolean,
+        private val shootSpeed: Shooter.ShootSpeed,
         ) :
         CommandSequence() {
 
@@ -21,13 +22,13 @@ class LocationShoot(
                 InstantCommand(
                         object : Runnable {
                             override fun run() {
-                                shooter.startShooting(false);
+                                shooter.startShooting(shootSpeed);
                             }
                         },
                 ),
                 GotoPosePar(shooter, elevator, pose),
                 
-                Shoot(shooter,elevator,false).build(),
+                Shoot(shooter,elevator,shootSpeed).build(),
                 WaitCommand(1.0)
             )
 

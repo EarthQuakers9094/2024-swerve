@@ -305,16 +305,39 @@ class Shooter(
         )
     }
 
-    fun startShooting(amp: Boolean) {
+    enum class ShootSpeed {
+        Amp,
+        Speaker,
+        Trap,
+        Lob,
+    }
+
+
+    
+    fun startShooting(shootSpeed: ShootSpeed) {
         val speed =
-                if (amp) {
-                    Constants.Shooter.ampSpeed
-                } else {
-                    Constants.Shooter.speed
-                }
+            when (shootSpeed) {
+                ShootSpeed.Amp -> Constants.Shooter.ampSpeed
+                ShootSpeed.Speaker -> Constants.Shooter.speed
+                ShootSpeed.Trap -> Constants.Shooter.trapSpeed
+                ShootSpeed.Lob -> Constants.Shooter.lobSpeed
+            }
+                // if (amp) {
+                //     Constants.Shooter.ampSpeed
+                // } else {
+                //     Constants.Shooter.speed
+                // }
         currentSetSpeed = speed
 
         shooterSparkMax.set(speed)
+    }
+
+    fun startShooting(amp: Boolean) {
+        if (amp) {
+            startShooting(ShootSpeed.Amp);
+        } else {
+            startShooting(ShootSpeed.Speaker)
+        }
     }
 
     fun stopShooting() {
@@ -368,7 +391,7 @@ class Shooter(
                         parent.stopIntaking()
                     }
                 },
-                parent
+                // parent
         )
     }
 
@@ -386,7 +409,7 @@ class Shooter(
                         parent.stopIntaking()
                     }
                 },
-                parent
+                // parent
         )
     }
 
@@ -491,15 +514,20 @@ class Shooter(
         return !inSensor.get()
     }
 
-    fun atSpeed(amp: Boolean): Boolean {
+    fun atSpeed(shootSpeed: ShootSpeed): Boolean {
         if (RobotBase.isReal()) {
             speed = shooterSparkMax.encoder.velocity
         }
 
-        return if (amp) {
-            speed <= -2700.0
-        } else {
-            speed <= -4500.0
+        return when (shootSpeed) {
+            ShootSpeed.Trap -> speed <= -1700.0
+            ShootSpeed.Speaker -> speed <= -4500.0
+            ShootSpeed.Amp -> speed <= -2700.0
+            ShootSpeed.Lob -> speed <= -3500.0
         }
+    }
+
+    fun atSpeed(amp: Boolean): Boolean {
+        return atSpeed(if (amp) {ShootSpeed.Amp} else {ShootSpeed.Speaker})
     }
 }

@@ -11,6 +11,7 @@ import frc.robot.subsystems.Shooter
 import frc.robot.subsystems.Swerve
 import frc.robot.commands.CommandSequence
 import org.photonvision.PhotonCamera
+import AlignSpeaker
 
 class ShootTime(
         private val shooter: Shooter,
@@ -33,9 +34,11 @@ class ShootTime(
                             },
                             intake
                     ),
+                    AlignSpeaker(camera, swerveDrive),
                    // FaceDirection(swerveDrive, { swerveDrive.speakerAngle() }, false)
                         /*.alongWith( */AimShooter(shooter, swerveDrive, true, camera, {false})/*)*/,
-                    Shoot(shooter,elevator,false).build()
+                    WaitCommand(0.25),
+                    Shoot(shooter,elevator,Shooter.ShootSpeed.Speaker).build()
             )
 
     override fun finally(interrupted: Boolean) {

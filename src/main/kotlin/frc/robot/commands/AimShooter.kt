@@ -18,19 +18,24 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
         // each subsystem used by the command must be passed into the addRequirements() method
         addRequirements(shooter)
     }
-
+    private var firstUpdate = true
     private enum class ShootingState {
         Idle,
         Revving,
         Shooting,
     }
     private var shootingState = ShootingState.Idle
-
+private val firstOffset = -0.5
     override fun initialize() {
         SmartDashboard.putNumber("aiming height", height);
         SmartDashboard.putBoolean("aim shooter running", true);
+        shooter.stopShooting()
+        shooter.stopIntaking()
+        updatesSinceFinish = 0
+        shootingState = ShootingState.Idle
     }
 
+    private var updatesSinceFinish = 0
 
     override fun execute() {
         SmartDashboard.putString("current aim shooter state", shootingState.toString())
@@ -43,7 +48,7 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
         //                           xdif*xdif );
         val result = camera.latestResult
         
-        val distance = result.targets.filter { it.fiducialId == 4 }.getOrNull(0)?.pitch//swerveDrive.speakerDistance()
+        val distance = result.targets.filter { it.fiducialId == 4 || it.fiducialId == 7 }.getOrNull(0)?.pitch//swerveDrive.speakerDistance()
         SmartDashboard.putNumber("tag pitch", distance ?: -1.0)
         SmartDashboard.putBoolean("calculating angle for aiming", false)
         distance?.let { x ->
@@ -53,8 +58,8 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
             // v4 val angle = 4.26707 - (46.9928 * distance) + (208.464 * distance.pow(2)) - (416.168 * distance.pow(3)) + (384.272 * distance.pow(4)) - (132.984 * distance.pow(5))
             // v5 val angle = 7.50023 - (189.565 * x) + (1999.42 * x.pow(2)) - (10831.8 * x.pow(3)) + (32686.6 * x.pow(4)) - (55084.5 * x.pow(5)) + (48226.9 * x.pow(6)) - (17006.9 * x.pow(7))
             // v6 val angle = 0.620003 + (0.0107606 * x) + (0.0010628 * x.pow(2)) + (0.000179998 * x.pow(3)) - (0.0000583219 * x.pow(4)) + (7.04788 * (10.0).pow(-6) * x.pow(5)) - (2.63916 * (10.0).pow(-7) * x.pow(6))
-            val angle = 0.57444 + (0.0217394 * x)
-           
+            val angle = 0.600044 + (0.0217394 * x * 1.1) + if(firstUpdate) {firstOffset} else {0.0}
+            //val angle = (0.535) + ((Math.PI / 180) * x)
             //0.83, 0.9
             //0.53, 0.72 
             //0.36, 0.6
@@ -71,34 +76,43 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
             // both are in radians? https://kotlinlang.org/api/latest/jvm/stdlib/kotlin.math/atan2.html#:~:text=Returns%20the%20angle%20theta%20of,from%20%2DPI%20to%20PI%20radians.
             shooter.setAngle(angle.coerceIn(0.0, 0.887))
         }
-        if(shooter.noteIn()) {
-            when (shootingState) {
-                ShootingState.Idle -> {
-                    shootingState = ShootingState.Revving
-                    shooter.startShooting(false)
-                    //SmartDashboard.putBoolean("revving", false);
-                    shooter.coastMode()
+        when (shootingState) {
+            ShootingState.Idle -> {
+                if(shooter.noteIn()) {
+
+                shootingState = ShootingState.Revving
+                shooter.startShooting(false)
+                //SmartDashboard.putBoolean("revving", false);
+                shooter.coastMode()
                 }
-                ShootingState.Revving -> {
-                    if (shooter.atSpeed(false) && shoot()) {
+            }
+            ShootingState.Revving -> {
+                shooter.startShooting(false)
+                if (shooter.atSpeed(false)) {
+                    val speeds = swerveDrive.getSpeeds()
+                    if(shoot() && shooter.atAngle()/* && Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2.0) + Math.pow(speeds.vyMetersPerSecond, 2.0)) < 0.01  */) {
                         shootingState = ShootingState.Shooting
                         shooter.intake()
                     }
                 }
-                ShootingState.Shooting -> {
-                    if(!shooter.noteIn()) {
+            }
+            ShootingState.Shooting -> {
+                SmartDashboard.putBoolean("Note in", shooter.noteIn())
+                if(!shooter.noteIn()) {
+                    updatesSinceFinish = updatesSinceFinish + 1
+                    SmartDashboard.putNumber("updates since finish", updatesSinceFinish.toDouble())
+                    if(updatesSinceFinish >= 120) {
+                        updatesSinceFinish = 0
                         shootingState = ShootingState.Idle
                         shooter.stopShooting()
                         shooter.stopIntaking()
                     }
                 }
             }
-        } else {
-            shootingState = ShootingState.Idle
-            shooter.stopShooting()
-            shooter.stopIntaking()
         }
-    }
+        firstUpdate = false
+    }   
+    
 
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
@@ -106,6 +120,12 @@ class AimShooter( private val shooter: Shooter, private val swerveDrive: Swerve,
     }
 
     override fun end(interrupted: Boolean) {
+        shooter.stopShooting()
+                        shooter.stopIntaking()
+                        updatesSinceFinish = 0
+        shootingState = ShootingState.Idle
+        if (!terminate) {shooter.setAngle(0.0)}
+                        
         SmartDashboard.putBoolean("aim shooter running", false);
     }
 }

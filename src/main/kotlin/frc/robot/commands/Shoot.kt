@@ -8,9 +8,9 @@ import frc.robot.subsystems.Shooter
 import frc.robot.subsystems.Elevator
 import frc.robot.commands.GotoPose
 
-class Shoot(private val shooter: Shooter, private val elevator: Elevator, private val amp: Boolean) : CommandSequence() {
+class Shoot(private val shooter: Shooter, private val elevator: Elevator, private val shootSpeed: Shooter.ShootSpeed) : CommandSequence() {
 
-    val supplier = { shooter.atSpeed(amp) }
+    val supplier = { shooter.atSpeed(shootSpeed) }
 
     val inShooter = { !shooter.noteIn() }
 
@@ -19,7 +19,7 @@ class Shoot(private val shooter: Shooter, private val elevator: Elevator, privat
                     InstantCommand(
                             object : Runnable {
                                 override fun run() {
-                                    shooter.startShooting(amp)
+                                    shooter.startShooting(shootSpeed)
                                     SmartDashboard.putBoolean("intaking shooter on shoot", false);
                                     shooter.coastMode()
                                 }

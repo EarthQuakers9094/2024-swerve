@@ -27,7 +27,7 @@ object Constants {
     object Drivebase {
         const val WHEEL_LOCK_TIME = 10.0
         const val MAX_AUTO_SPEEDS = 3.0
-        const val RADIUS = 0.6
+        const val RADIUS = 0.6 * 1.6415
 
         const val MAX_ACCEL = 1.0
         const val MAX_ANGULAR_ACCELERATION = 0.5
@@ -39,10 +39,10 @@ object Constants {
         // val ROTATION_PID = PIDConstants(3.2, 0.0, 0.0)
         val ROTATION_PID = Config(PIDConstants(3.2, 0.0, 0.0), PIDConstants(2.0, 0.0, 0.0))
 
-        val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.0)
+        val ROTATION_PID_TELEOP = PIDConstants(0.4, 0.0, 0.04)
     }
     object OperatorConstants {
-        const val kDriverControllerPort = 2
+        const val kDriverControllerPort = 2;const val kbonusControllerPort = 3
         const val driverLeftStickPort = 0
         const val driverRightStickPort = 1
         const val LEFT_X_DEADBAND = 0.05
@@ -106,7 +106,7 @@ object Constants {
         const val p = 0.0
         const val i = 0.0
         const val d = 0.0
-        val join_pid = PIDConstants(1.6, 0.0, 0.5)
+        val join_pid = PIDConstants(1.6, 0.0, 0.5)//PIDConstants(0.8, 0.0, 0.5)
         val sim_join_pid = PIDConstants(5.0, 0.0, 0.0)
 
         val sim_pid = PIDConstants(20.0, 0.0, 0.0)
@@ -117,11 +117,13 @@ object Constants {
         // const val intakeSpeed = 0.9
         // const val speed = -0.75
 
-        // const val spinuptime = 5.0
+        // const val spinuptime = 5.0   
         // const val shootTime = 0.6
         // const val closestDistance = 200
         val validTargets = arrayOf(4, 3)
         const val ampSpeed = -0.5
+        const val trapSpeed = -0.36
+        const val lobSpeed = -0.57
         const val ampShootingRotationSpeed = 0.0
 
         const val startAngle = Math.PI * 74.0 / 180.0
@@ -164,12 +166,13 @@ object Constants {
         val resting = Pose(0.0, Elevator.minHeight)
         val highPickup = Pose(0.598419, 11.523871 - 1.0)
         // val speakerShoot = Pose(0.887, Elevator.minHeight)
-        val speakerShoot = Pose(0.90, Elevator.minHeight)
+        val speakerShoot = Pose(0.87, Elevator.minHeight)
         // val speakerShootAuton = Pose(0.90, Elevator.minHeight)
 
         val lob = Pose(Math.PI/4.0, Elevator.minHeight)
         val halfUp = Pose(0.8, 33.3)
         val allUp = Pose(0.0, Elevator.maxHeight)
+        val trapShot = Pose(Math.PI * 122.0/360.0,40.0);
         val highShot = Pose(Math.PI/10.0,40.0)
     }
 }

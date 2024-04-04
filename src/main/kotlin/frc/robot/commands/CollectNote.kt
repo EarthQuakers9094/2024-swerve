@@ -20,7 +20,7 @@ class CollectNote(
         private val dataInconsistency: Int,
         private val hasNote: BooleanSupplier,
         private val teleop: Boolean,
-        private val intake: Intake?
+        // private val intake: Intake?
 ) : Command() {
     private var forward = true
     private val targetYaw = MovingAverage(dataInconsistency)
@@ -44,7 +44,7 @@ class CollectNote(
         for (unused in 1..10) {
             targetYaw.addValue(0.0)
         }
-        forward = true//CollectNote.pickDirection(frontCamera, backCamera)
+        forward = false//CollectNote.pickDirection(frontCamera, backCamera)
     }
 
     /**
@@ -53,16 +53,22 @@ class CollectNote(
      */
     override fun execute() {
         SmartDashboard.putData("notepid", rotationPID)
+        SmartDashboard.putNumber("updates  since collect note had its last target", updatesSinceLastTarget.toDouble())
+        
         val camera = backCamera
+        
         val res = camera.latestResult
+
+        SmartDashboard.putNumber("number of targets", res.targets.size.toDouble())
         var calculation = 0.0
         var speedFactor = 1.0
         if(!teleop) {
-        if (updatesSinceLastTarget > (30)) {
-            intake?.stopIntaking()
-        } else {
-            intake?.startIntaking()
-        }}
+        // if (updatesSinceLastTarget > (30)) {
+        //     intake?.stopIntaking()
+        // } else {
+        //     intake?.startIntaking()
+        // }
+    }
         if (!hasNote.asBoolean && res.hasTargets() && res.bestTarget.area > 2.0) {
             updatesSinceLastTarget = 0
             val target = res.bestTarget
@@ -75,9 +81,9 @@ class CollectNote(
         } else {
             updatesSinceLastTarget++
         }
-        if (updatesSinceLastTarget < (20)) {
+        if (updatesSinceLastTarget <= (0)) {
             val direction = if (forward) {1.0} else {-1.0}
-            swerve.drive(Translation2d(2.0 * speedFactor * (direction) /*-0.75*/, 0.0), calculation, false)
+            swerve.drive(Translation2d(2.0 * (direction) /*-0.75*/, 0.0), calculation, false)
         }
     }
 
@@ -95,7 +101,7 @@ class CollectNote(
      */
     override fun isFinished(): Boolean {
         // TODO: Make this return true when this Command no longer needs to run execute()
-        return updatesSinceLastTarget > (40)
+        return updatesSinceLastTarget > (0)
     }
 
     /**
