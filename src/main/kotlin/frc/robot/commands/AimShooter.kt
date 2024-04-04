@@ -120,7 +120,7 @@ private val firstOffset = -0.5
     }
 
     override fun end(interrupted: Boolean) {
-        if(shootingState == ShootingState.Shooting) {shooter.stopShooting()}
+        if(shootingState != ShootingState.Shooting) {shooter.stopShooting()}
                         shooter.stopIntaking()
                         updatesSinceFinish = 0
         shootingState = ShootingState.Idle

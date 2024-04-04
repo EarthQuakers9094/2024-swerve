@@ -400,7 +400,7 @@ class Shooter(
         return Commands.startEnd(
                 object : Runnable {
                     override fun run() {
-                        intakingMotor.set(1.0)
+                        intakingMotor.set(0.2)
                     }
                 },
                 object : Runnable {

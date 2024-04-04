@@ -61,6 +61,12 @@
           }
         },
         {
+          "type": "named",
+          "data": {
+            "name": "autoPickup"
+          }
+        },
+        {
           "type": "parallel",
           "data": {
             "commands": [

@@ -530,7 +530,7 @@ JoystickButton(driverRightStick, 3)
         }
 
     fun teleperiodic() {
-        driverExtraHid.setRumble(
+        operatorExtraHid.setRumble(
                 GenericHID.RumbleType.kBothRumble,
                 (if (shooter?.noteIn() ?: false) {
                     0.1
