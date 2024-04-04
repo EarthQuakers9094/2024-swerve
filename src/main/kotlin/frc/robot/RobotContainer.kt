@@ -541,10 +541,10 @@ JoystickButton(driverRightStick, 3)
         val speeds = swerveDrive.getSpeeds()
         val speed = 
         operatorExtraHid.setRumble(GenericHID.RumbleType.kBothRumble, 
-                /*if(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2.0) + Math.pow(speeds.vyMetersPerSecond, 2.0)) < 0.1 
+                if(Math.sqrt(Math.pow(speeds.vxMetersPerSecond, 2.0) + Math.pow(speeds.vyMetersPerSecond, 2.0)) < 0.1 
                 && shooter!!.atAngle() 
                 && driverLeftStick.getRawButton(2)) 
-                {*/0.5/*} else {0.0}*/)
+                {0.5} else {0.0})
     }
     fun cleanUp() {
         driverExtraHid.setRumble(

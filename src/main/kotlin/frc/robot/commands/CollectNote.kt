@@ -22,7 +22,7 @@ class CollectNote(
         private val teleop: Boolean,
         // private val intake: Intake?
 ) : Command() {
-    private var forward = true
+    private var forward = false
     private val targetYaw = MovingAverage(dataInconsistency)
     private var updatesSinceLastTarget = 0
 
@@ -62,6 +62,7 @@ class CollectNote(
         SmartDashboard.putNumber("number of targets", res.targets.size.toDouble())
         var calculation = 0.0
         var speedFactor = 1.0
+        var targetPitch = 40.0
         if(!teleop) {
         // if (updatesSinceLastTarget > (30)) {
         //     intake?.stopIntaking()
@@ -72,18 +73,21 @@ class CollectNote(
         if (!hasNote.asBoolean && res.hasTargets() && res.bestTarget.area > 2.0) {
             updatesSinceLastTarget = 0
             val target = res.bestTarget
+            targetPitch = -1.0 * (Math.min(target.pitch, -0.1))
             val averageYaw = targetYaw.addValue(target.yaw)
             SmartDashboard.putNumber("note yaw", averageYaw)
             calculation = rotationPID.calculate(averageYaw)
             if (target.area > 15) {
                 speedFactor = 0.5
             }
-        } else {
+        } else { 
             updatesSinceLastTarget++
         }
         if (updatesSinceLastTarget <= (0)) {
             val direction = if (forward) {1.0} else {-1.0}
-            swerve.drive(Translation2d(2.0 * (direction) /*-0.75*/, 0.0), calculation, false)
+            val speed = 0.75 * (direction) * Math.pow(2.0/targetPitch, 0.1)
+            SmartDashboard.putNumber("autoSpeed", speed)
+            swerve.drive(Translation2d(speed/* -0.75*/, 0.0), calculation, false)
         }
     }
 

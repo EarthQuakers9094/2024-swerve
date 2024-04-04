@@ -120,11 +120,12 @@ private val firstOffset = -0.5
     }
 
     override fun end(interrupted: Boolean) {
-        shooter.stopShooting()
+        if(shootingState == ShootingState.Shooting) {shooter.stopShooting()}
                         shooter.stopIntaking()
                         updatesSinceFinish = 0
         shootingState = ShootingState.Idle
         if (!terminate) {shooter.setAngle(0.0)}
+        
                         
         SmartDashboard.putBoolean("aim shooter running", false);
     }

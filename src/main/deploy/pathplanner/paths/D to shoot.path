@@ -3,29 +3,29 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 0.7815863793056181,
-        "y": 4.53799778299438
+        "x": 7.715179558472996,
+        "y": 0.7303644500527445
       },
       "prevControl": null,
       "nextControl": {
-        "x": 1.7815863793056188,
-        "y": 4.53799778299438
+        "x": 4.014666344868579,
+        "y": 1.694445524117481
       },
       "isLocked": false,
       "linkedName": null
     },
     {
       "anchor": {
-        "x": 7.423033778451899,
-        "y": 1.1491067347496495
+        "x": 3.5082803261653446,
+        "y": 3.1551744242229676
       },
       "prevControl": {
-        "x": 4.092571886211389,
-        "y": 0.31162216535583825
+        "x": 4.267859354220198,
+        "y": 2.239784313490196
       },
       "nextControl": null,
       "isLocked": false,
-      "linkedName": "F note pickup"
+      "linkedName": "Source shoot"
     }
   ],
   "rotationTargets": [],
@@ -39,13 +39,13 @@
   },
   "goalEndState": {
     "velocity": 0,
-    "rotation": -38.491043559497406,
+    "rotation": 150.57254359681025,
     "rotateFast": false
   },
   "reversed": false,
   "folder": "pickupside",
   "previewStartingState": {
-    "rotation": 122.00538320808354,
+    "rotation": 178.60281897341793,
     "velocity": 0
   },
   "useDefaultConstraints": true
