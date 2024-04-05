@@ -123,7 +123,7 @@ object Constants {
         val validTargets = arrayOf(4, 3)
         const val ampSpeed = -0.5
         const val trapSpeed = -0.36
-        const val lobSpeed = -0.57
+        const val lobSpeed = -0.57 * 0.95
         const val ampShootingRotationSpeed = 0.0
 
         const val startAngle = Math.PI * 74.0 / 180.0

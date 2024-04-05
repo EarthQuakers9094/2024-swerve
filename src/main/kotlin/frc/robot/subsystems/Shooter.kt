@@ -523,7 +523,7 @@ class Shooter(
             ShootSpeed.Trap -> speed <= -1700.0
             ShootSpeed.Speaker -> speed <= -4500.0
             ShootSpeed.Amp -> speed <= -2700.0
-            ShootSpeed.Lob -> speed <= -3500.0
+            ShootSpeed.Lob -> speed <= (-3500.0 * 0.95)
         }
     }
 
