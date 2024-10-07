@@ -3,13 +3,13 @@
   "waypoints": [
     {
       "anchor": {
-        "x": 3.5082803261653446,
-        "y": 3.1551744242229676
+        "x": 1.8887296807653544,
+        "y": 3.3004296034048872
       },
       "prevControl": null,
       "nextControl": {
-        "x": 4.3068121248935265,
-        "y": 1.460728900105488
+        "x": -0.7745916764117111,
+        "y": 0.2088879495836662
       },
       "isLocked": false,
       "linkedName": "Source shoot"
@@ -20,8 +20,8 @@
         "y": 2.483239130179329
       },
       "prevControl": {
-        "x": 5.455918859643176,
-        "y": 0.983557459404363
+        "x": 5.627823978294268,
+        "y": 0.2088879495825155
       },
       "nextControl": null,
       "isLocked": false,
@@ -32,7 +32,7 @@
   "constraintZones": [],
   "eventMarkers": [],
   "globalConstraints": {
-    "maxVelocity": 3.0,
+    "maxVelocity": 4.0,
     "maxAcceleration": 3.0,
     "maxAngularVelocity": 540.0,
     "maxAngularAcceleration": 720.0
@@ -45,8 +45,8 @@
   "reversed": false,
   "folder": "pickupside",
   "previewStartingState": {
-    "rotation": 149.42077312680146,
+    "rotation": 173.9909940425055,
     "velocity": 0
   },
-  "useDefaultConstraints": true
+  "useDefaultConstraints": false
 }

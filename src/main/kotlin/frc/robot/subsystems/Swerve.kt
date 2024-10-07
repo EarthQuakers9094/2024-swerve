@@ -239,7 +239,7 @@ class Swerve(
     }
 
     fun setMotorBrake(enabled: Boolean) {
-        swerveDrive.setMotorIdleMode(enabled)
+        swerveDrive.setMotorIdleMode(false)//enabled)
     }
 
     fun getSwerveController(): SwerveController {

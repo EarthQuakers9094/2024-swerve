@@ -2,10 +2,10 @@
   "version": 1.0,
   "startingPose": {
     "position": {
-      "x": 1.5440645639577437,
-      "y": 7.457299800095811
+      "x": 0.7766423737975686,
+      "y": 6.546387656877878
     },
-    "rotation": -179.99999999999605
+    "rotation": -121.75948008481285
   },
   "command": {
     "type": "sequential",
@@ -14,19 +14,13 @@
         {
           "type": "named",
           "data": {
-            "name": "faceSpeaker"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "shoot"
+            "name": "shootSpeaker"
           }
         },
         {
           "type": "path",
           "data": {
-            "pathName": "amp side far middle"
+            "pathName": "amp side middle"
           }
         },
         {

@@ -11,11 +11,10 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
 import frc.robot.Constants
 import frc.robot.subsystems.Swerve
-import frc.robot.camera.AprilTagPoseEstimator
-import org.photonvision.PhotonCamera
 import java.util.function.BooleanSupplier
 import java.util.function.DoubleSupplier
 import kotlin.math.sqrt
+import org.photonvision.PhotonCamera
 
 /** An example command that uses an example subsystem. */
 public class TeleopDrive(
@@ -37,7 +36,7 @@ public class TeleopDrive(
 
   var rotationPid = PIDController(rotationPIDvalues.kP, rotationPIDvalues.kI, rotationPIDvalues.kD)
   var lastFrameFacing = false
-  
+
   public var facingSpeaker = false
 
   /**
@@ -76,13 +75,24 @@ public class TeleopDrive(
     if (facing) {
       if (!lastFrameFacing) {
         rotationPid =
-            PIDController(Constants.Camera.rotationPid.kP, Constants.Camera.rotationPid.kI, Constants.Camera.rotationPid.kD)
+            PIDController(
+                Constants.Camera.rotationPid.kP,
+                Constants.Camera.rotationPid.kI,
+                Constants.Camera.rotationPid.kD
+            )
       }
-      val targetyaw = -1 * (camera.latestResult.targets.filter { it.fiducialId == 4 || it.fiducialId == 7 }.getOrNull(0)?.yaw ?: 0.0)
+      val targetyaw =
+          -1 *
+              (camera
+                  .latestResult
+                  .targets
+                  .filter { it.fiducialId == 4 || it.fiducialId == 7 || it.fiducialId == 1 }
+                  .getOrNull(0)
+                  ?.yaw
+                  ?: 0.0)
       facingSpeaker = Math.abs(targetyaw) < 3.0
       SmartDashboard.putNumber("The target yaw", targetyaw)
-      angVelocity =
-          rotationPid.calculate(targetyaw)
+      angVelocity = rotationPid.calculate(targetyaw)
     } else {
       angVelocity = Math.pow(omega.getAsDouble(), 3.0)
     }

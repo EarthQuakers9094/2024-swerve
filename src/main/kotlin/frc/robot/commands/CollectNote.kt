@@ -5,22 +5,20 @@ import edu.wpi.first.math.controller.PIDController
 import edu.wpi.first.math.geometry.Translation2d
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard
 import edu.wpi.first.wpilibj2.command.Command
-import frc.robot.subsystems.Intake
 import frc.robot.subsystems.Swerve
 import frc.robot.utils.MovingAverage
-import frc.robot.commands.CollectNote
-import org.photonvision.PhotonCamera
 import java.util.function.BooleanSupplier
+import org.photonvision.PhotonCamera
 
 class CollectNote(
         private val rotationPidConstants: PIDConstants,
-        //private val frontCamera: PhotonCamera,
+        // private val frontCamera: PhotonCamera,
         private val backCamera: PhotonCamera,
         private val swerve: Swerve,
         private val dataInconsistency: Int,
         private val hasNote: BooleanSupplier,
         private val teleop: Boolean,
-        // private val intake: Intake?
+// private val intake: Intake?
 ) : Command() {
     private var forward = false
     private val targetYaw = MovingAverage(dataInconsistency)
@@ -34,8 +32,8 @@ class CollectNote(
         // if (intake != null) {
         //     addRequirements(intake, swerve)
         // } else {
-            addRequirements(swerve)
-        //}
+        addRequirements(swerve)
+        // }
     }
 
     /** The initial subroutine of a command. Called once when the command is initially scheduled. */
@@ -44,7 +42,7 @@ class CollectNote(
         for (unused in 1..10) {
             targetYaw.addValue(0.0)
         }
-        forward = false//CollectNote.pickDirection(frontCamera, backCamera)
+        forward = false // CollectNote.pickDirection(frontCamera, backCamera)
     }
 
     /**
@@ -53,23 +51,26 @@ class CollectNote(
      */
     override fun execute() {
         SmartDashboard.putData("notepid", rotationPID)
-        SmartDashboard.putNumber("updates  since collect note had its last target", updatesSinceLastTarget.toDouble())
-        
+        SmartDashboard.putNumber(
+                "updates  since collect note had its last target",
+                updatesSinceLastTarget.toDouble()
+        )
+
         val camera = backCamera
-        
+
         val res = camera.latestResult
 
         SmartDashboard.putNumber("number of targets", res.targets.size.toDouble())
         var calculation = 0.0
         var speedFactor = 1.0
         var targetPitch = 40.0
-        if(!teleop) {
-        // if (updatesSinceLastTarget > (30)) {
-        //     intake?.stopIntaking()
-        // } else {
-        //     intake?.startIntaking()
-        // }
-    }
+        if (!teleop) {
+            // if (updatesSinceLastTarget > (30)) {
+            //     intake?.stopIntaking()
+            // } else {
+            //     intake?.startIntaking()
+            // }
+        }
         if (!hasNote.asBoolean && res.hasTargets() && res.bestTarget.area > 2.0) {
             updatesSinceLastTarget = 0
             val target = res.bestTarget
@@ -80,14 +81,19 @@ class CollectNote(
             if (target.area > 15) {
                 speedFactor = 0.5
             }
-        } else { 
+        } else {
             updatesSinceLastTarget++
         }
         if (updatesSinceLastTarget <= (0)) {
-            val direction = if (forward) {1.0} else {-1.0}
-            val speed = 0.75 * (direction) * Math.pow(2.0/targetPitch, 0.1)
+            val direction =
+                    if (forward) {
+                        1.0
+                    } else {
+                        -1.0
+                    }
+            val speed = 0.75 * (direction) * Math.pow(2.0 / targetPitch, 0.1)
             SmartDashboard.putNumber("autoSpeed", speed)
-            swerve.drive(Translation2d(speed/* -0.75*/, 0.0), calculation, false)
+            swerve.drive(Translation2d(speed /* -0.75*/, 0.0), calculation, false)
         }
     }
 
@@ -118,13 +124,12 @@ class CollectNote(
      */
     override fun end(interrupted: Boolean) {}
 
-
     companion object {
         fun pickDirection(frontCamera: PhotonCamera, backCamera: PhotonCamera): Boolean {
             return false
             val frontResult = frontCamera.latestResult
             val backResult = backCamera.latestResult
-           if(frontResult.hasTargets() && backResult.hasTargets()) {
+            if (frontResult.hasTargets() && backResult.hasTargets()) {
                 return frontResult.bestTarget.area > backResult.bestTarget.area
             } else if (frontResult.hasTargets()) {
                 return true
